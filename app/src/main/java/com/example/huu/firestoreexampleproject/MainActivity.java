@@ -11,6 +11,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -24,6 +26,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nullable;
@@ -89,13 +92,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void loadButton(View view) {
-        noteBookRef.whereGreaterThanOrEqualTo("priority", 2)
-                .orderBy("priority", Query.Direction.DESCENDING)
-                .limit(2)
-                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        Task<QuerySnapshot> tasks1 = noteBookRef.whereLessThan("priority", 2).orderBy("priority").get();
+        Task<QuerySnapshot> task2 = noteBookRef.whereGreaterThan("priority", 2).orderBy("priority").get();
+        Task<List<QuerySnapshot>> allTasks = Tasks.whenAllSuccess(tasks1, task2);
+        allTasks.addOnSuccessListener(new OnSuccessListener<List<QuerySnapshot>>() {
             @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+            public void onSuccess(List<QuerySnapshot> querySnapshots) {
                 String data = "";
+                for(QuerySnapshot queryDocumentSnapshots: querySnapshots){
                 for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                     Note note = documentSnapshot.toObject(Note.class);
                     note.setDocumentId(documentSnapshot.getId());
@@ -103,13 +107,13 @@ public class MainActivity extends AppCompatActivity {
                     String title = note.getTitle();
                     String description = note.getDescription();
                     int priority = note.getPriority();
-                    data += "ID: " + documentId + "\nTitle: "
+                    data += "ID: "+documentId+"\nTitle: "
                             + title + "\nDescription: "
-                            + description + "\nPriority: "
-                            + priority + "\n\n";
+                            + description +"\nPriority: "
+                            +priority+ "\n\n";
                 }
                 tvData.setText(data);
-            }
+            }}
         });
     }
 
