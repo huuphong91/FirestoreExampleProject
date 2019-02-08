@@ -14,6 +14,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.SetOptions;
@@ -55,7 +56,9 @@ public class MainActivity extends AppCompatActivity {
                 if (documentSnapshot.exists()) {
                     String title = documentSnapshot.getString(KEY_TITLE);
                     String description = documentSnapshot.getString(KEY_DESCRIPTION);
-                    tvData.setText("Title: "+ title + "\n Description: "+ description);
+                    tvData.setText("Title: " + title + "\n Description: " + description);
+                } else {
+                    tvData.setText("");
                 }
             }
         });
@@ -114,5 +117,13 @@ public class MainActivity extends AppCompatActivity {
         noteRef.update(KEY_DESCRIPTION, description);
         //Update nếu có dữ liệu trên db thì nó mới cập nhật, còn nếu không thì sẽ không có gì thay đổi hết.
         // Còn thằng merge thì dù có dữ liệu trên db hay không nó vẫn đưa dữ liệu cập nhật lên db bằng cách tạo mới nếu không có dữ liệu.
+    }
+
+    public void deleteDescriptionButton(View view) {
+        noteRef.update(KEY_DESCRIPTION, FieldValue.delete());
+    }
+
+    public void deleteNote(View view) {
+        noteRef.delete();
     }
 }
