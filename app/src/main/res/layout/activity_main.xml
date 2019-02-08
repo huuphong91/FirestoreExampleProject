@@ -22,32 +22,20 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Save"
-        android:onClick="saveButton"/>
+        android:text="Add"
+        android:onClick="addButton"/>
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Load"
         android:onClick="loadButton"/>
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Update Description"
-        android:onClick="updateDescriptionButton"/>
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Delete Description"
-        android:onClick="deleteDescriptionButton"/>
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Delele Note"
-        android:onClick="deleteNote"/>
+   <android.support.v4.widget.NestedScrollView
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content">
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="20sp"
         android:id="@+id/tvData"/>
-
+   </android.support.v4.widget.NestedScrollView>
 </LinearLayout>
