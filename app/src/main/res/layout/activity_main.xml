@@ -29,6 +29,11 @@
         android:layout_height="wrap_content"
         android:text="Load"
         android:onClick="loadButton"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Update Description"
+        android:onClick="updateDescriptionButton"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

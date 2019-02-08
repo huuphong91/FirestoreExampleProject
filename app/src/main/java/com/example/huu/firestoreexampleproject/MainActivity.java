@@ -13,10 +13,15 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.annotation.Nullable;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -34,6 +39,26 @@ public class MainActivity extends AppCompatActivity {
         edtTitle = findViewById(R.id.edtTitle);
         edtDescription = findViewById(R.id.edtDescription);
         tvData = findViewById(R.id.tvData);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        noteRef.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Toast.makeText(MainActivity.this, "Error while loading!", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, e.toString());
+                    return;
+                }
+                if (documentSnapshot.exists()) {
+                    String title = documentSnapshot.getString(KEY_TITLE);
+                    String description = documentSnapshot.getString(KEY_DESCRIPTION);
+                    tvData.setText("Title: "+ title + "\n Description: "+ description);
+                }
+            }
+        });
     }
 
     public void saveButton(View view) {
@@ -75,5 +100,19 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Error!", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public void updateDescriptionButton(View view) {
+        //Merge
+//        String description = edtDescription.getText().toString();
+//        Map<String, Object> note = new HashMap<>();
+//        note.put(KEY_DESCRIPTION, description);
+//        noteRef.set(note, SetOptions.merge());
+
+        //Update
+        String description = edtDescription.getText().toString();
+        noteRef.update(KEY_DESCRIPTION, description);
+        //Update nếu có dữ liệu trên db thì nó mới cập nhật, còn nếu không thì sẽ không có gì thay đổi hết.
+        // Còn thằng merge thì dù có dữ liệu trên db hay không nó vẫn đưa dữ liệu cập nhật lên db bằng cách tạo mới nếu không có dữ liệu.
     }
 }
