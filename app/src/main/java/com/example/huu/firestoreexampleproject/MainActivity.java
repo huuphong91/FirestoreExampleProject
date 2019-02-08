@@ -54,9 +54,10 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
                 if (documentSnapshot.exists()) {
-                    String title = documentSnapshot.getString(KEY_TITLE);
-                    String description = documentSnapshot.getString(KEY_DESCRIPTION);
-                    tvData.setText("Title: " + title + "\n Description: " + description);
+                    Note note = documentSnapshot.toObject(Note.class);
+                    String title = note.getTitle();
+                    String description = note.getDescription();
+                    tvData.setText("Title: "+ title + "\n Description: "+ description);
                 } else {
                     tvData.setText("");
                 }
@@ -67,9 +68,8 @@ public class MainActivity extends AppCompatActivity {
     public void saveButton(View view) {
         String title = edtTitle.getText().toString();
         String description = edtDescription.getText().toString();
-        Map<String, Object> note = new HashMap<>();
-        note.put(KEY_TITLE, title);
-        note.put(KEY_DESCRIPTION, description);
+        Note note = new Note(title, description);
+
         noteRef.set(note).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -90,8 +90,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
-                    String title = documentSnapshot.getString(KEY_TITLE);
-                    String description = documentSnapshot.getString(KEY_DESCRIPTION);
+                    Note note = documentSnapshot.toObject(Note.class);
+                    String title = note.getTitle();
+                    String description = note.getDescription();
                     tvData.setText("Title: "+ title + "\n Description: "+ description);
                 } else {
                     Toast.makeText(MainActivity.this, "Document does not exist", Toast.LENGTH_SHORT).show();
